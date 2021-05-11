@@ -14,8 +14,16 @@ import com.istloja.modelTable.ModeloTablaBusqueda;
 import com.istloja.modelo.Consulta;
 import com.istloja.modelo.Paciente;
 import com.istloja.utilidades.Utilidades;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -49,9 +57,20 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         modeloTablaConsultas = new ModelTableConsultas(new ArrayList<Consulta>(), this);
 
         initComponents();
+        setLocationRelativeTo(null);
+        txtIdConsulta.setText(controladorConsultas.IdConsultar());
         jrCedula.setSelected(true);
-        gestionPacientes = new GestionarPacientes(txtCedula, txtNombres, txtEdad, txtDireccion, txtCorreo, txtAnteFamiliares, txtAntePersonales, txtCirugias, utilidades, this, jbGenero, jbEstado, dateNa);
+        btnEditarPaciente.setEnabled(false);
+        btnEliminarPaciente.setEnabled(false);
+        btnGuardarPaciente.setEnabled(false);
+        btnNuevaConsulta.setEnabled(false);
+        btnActualizarConsulta.setEnabled(false);
+        btnGuardarConsulta.setEnabled(false);
+        txtCedula.setEditable(false);
+        gestionPacientes = new GestionarPacientes(txtCedula, txtNombres, txtEdad, txtDireccion, txtCorreo,txtTelefono, txtAnteFamiliares, txtAntePersonales, txtCirugias, utilidades, this, jbGenero, jbEstado, dateNa);
         gestionConsultas = new GestionConsultas(txtIdConsulta,txtMotivoConsulta,txtHistoriaEnfermedadActual,txtExamenFisico,txtEstudiosComplementarios,txtDiagnosticos,txtTratamientos,this,dateConsulta);
+        
+        
     }
 
     /**
@@ -100,6 +119,8 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         jrCedula = new javax.swing.JRadioButton();
         jbGenero = new javax.swing.JComboBox<>();
         jbEstado = new javax.swing.JComboBox<>();
+        jLabel30 = new javax.swing.JLabel();
+        txtTelefono = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLayeredPane2 = new javax.swing.JLayeredPane();
         jLabel18 = new javax.swing.JLabel();
@@ -126,6 +147,7 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         jLabel23 = new javax.swing.JLabel();
         jScrollPane9 = new javax.swing.JScrollPane();
         txtTratamientos = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         txtIdConsulta = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
@@ -135,15 +157,31 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         jLabel14 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtCedulaConsultar = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        txtPeso = new javax.swing.JTextField();
+        jLabel27 = new javax.swing.JLabel();
+        txtTalla = new javax.swing.JTextField();
+        jLabel28 = new javax.swing.JLabel();
+        txtIMC = new javax.swing.JTextField();
+        jLabel29 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jLabel31 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SISTEMA DE GESTION MEDICO QUIAM (Dr Jorge Cango)");
+        setTitle("Sistema de registro de pacientes QUIAM ( Dr. David Quizhpe - Gastroenterólogo ) ");
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(125, 205, 194));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel1.setText("Registro de Pacientes");
+
+        txtCedula.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtCedulaMouseClicked(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel3.setText("Nombres:");
@@ -157,6 +195,7 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Edad:");
 
+        txtEdad.setEditable(false);
         txtEdad.setBackground(new java.awt.Color(102, 102, 255));
         txtEdad.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -168,6 +207,12 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel9.setText("Dirección:");
+
+        txtDireccion.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtDireccionFocusGained(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setText("Antecedentes Famiiares:");
@@ -262,18 +307,18 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                 .addContainerGap()
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnBuscarPaciente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                        .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnGuardarPaciente)
-                            .addComponent(jLabel25))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
                         .addComponent(btnNuevoPaciente)
                         .addGap(26, 26, 26)
                         .addComponent(btnEditarPaciente)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                        .addComponent(btnEliminarPaciente)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addComponent(btnEliminarPaciente))
+                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                        .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel25)
+                            .addComponent(btnGuardarPaciente))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jLayeredPane1Layout.setVerticalGroup(
@@ -290,12 +335,12 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                     .addComponent(btnEliminarPaciente))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGuardarPaciente)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jrCedula.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jrCedula.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jrCedula.setText("Cédula ");
         jrCedula.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -308,6 +353,9 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
 
         jbEstado.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jbEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Soltero", "Casado", "Viudo", "Divorciado" }));
+
+        jLabel30.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel30.setText("Teléfono: ");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -332,41 +380,41 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jrCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCedula))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(dateNa, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtCedula, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtNombres)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(95, 95, 95)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(dateNa, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel30)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(7, 7, 7)
                 .addComponent(jLayeredPane1)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(385, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(354, 354, 354))
         );
@@ -375,13 +423,13 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLayeredPane1)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
+                        .addGap(14, 14, 14)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4)
@@ -394,20 +442,22 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                             .addComponent(jLabel5)
                             .addComponent(jbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addGap(11, 11, 11)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(dateNa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel6))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(dateNa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel7)))
-                        .addGap(18, 18, 18)
+                                .addComponent(jLabel6)
+                                .addComponent(jLabel30)
+                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(9, 9, 9)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
                             .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8)
                             .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -424,7 +474,7 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
 
         jTabbedPane1.addTab("Pacientes", jPanel1);
 
-        jPanel2.setBackground(new java.awt.Color(125, 204, 194));
+        jPanel2.setBackground(new java.awt.Color(105, 205, 194));
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel18.setText("Motivo de Consulta: ");
@@ -504,6 +554,15 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         txtTratamientos.setRows(5);
         jScrollPane9.setViewportView(txtTratamientos);
 
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/istloja/img/google_calendar_new_logo_icon_159141.png"))); // NOI18N
+        jButton1.setText("Google Calendar ");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         jLayeredPane3.setLayer(jLabel24, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane3.setLayer(btnNuevaConsulta, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane3.setLayer(btnActualizarConsulta, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -511,6 +570,7 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         jLayeredPane3.setLayer(btnGuardarConsulta, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane3.setLayer(jLabel23, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane3.setLayer(jScrollPane9, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane3.setLayer(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jLayeredPane3Layout = new javax.swing.GroupLayout(jLayeredPane3);
         jLayeredPane3.setLayout(jLayeredPane3Layout);
@@ -532,12 +592,12 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                                 .addGap(31, 31, 31)
                                 .addComponent(btnGuardarConsulta))
                             .addComponent(jScrollPane10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane9))))
+                            .addComponent(jScrollPane9)
+                            .addGroup(jLayeredPane3Layout.createSequentialGroup()
+                                .addComponent(jLabel23)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addGroup(jLayeredPane3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel23)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jLayeredPane3Layout.setVerticalGroup(
             jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -545,23 +605,25 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                 .addGap(4, 4, 4)
                 .addComponent(jLabel24)
                 .addGap(18, 18, 18)
-                .addGroup(jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNuevaConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnGuardarConsulta)
-                        .addComponent(btnActualizarConsulta)))
+                .addGroup(jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnGuardarConsulta)
+                    .addComponent(btnNuevaConsulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnActualizarConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel23)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel16.setText("CONSULTA N°: ");
 
+        txtIdConsulta.setEditable(false);
         txtIdConsulta.setBackground(new java.awt.Color(102, 255, 102));
 
         jLabel17.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -581,6 +643,40 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                 txtCedulaConsultarActionPerformed(evt);
             }
         });
+
+        jLabel15.setText("Peso: ");
+
+        txtPeso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPesoActionPerformed(evt);
+            }
+        });
+
+        jLabel27.setText("Talla: ");
+
+        jLabel28.setText("IMC");
+
+        txtIMC.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtIMCFocusGained(evt);
+            }
+        });
+        txtIMC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIMCActionPerformed(evt);
+            }
+        });
+
+        jLabel29.setText("Kg.");
+
+        jButton2.setText("Agregar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel31.setText("m.");
 
         jLayeredPane2.setLayer(jLabel18, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane2.setLayer(txtMotivoConsulta, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -602,6 +698,15 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         jLayeredPane2.setLayer(jLabel14, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane2.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane2.setLayer(txtCedulaConsultar, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(jLabel15, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(txtPeso, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(jLabel27, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(txtTalla, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(jLabel28, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(txtIMC, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(jLabel29, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(jButton2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane2.setLayer(jLabel31, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jLayeredPane2Layout = new javax.swing.GroupLayout(jLayeredPane2);
         jLayeredPane2.setLayout(jLayeredPane2Layout);
@@ -643,7 +748,25 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                                     .addComponent(jLabel19)
                                     .addComponent(jLabel20)
                                     .addComponent(jLabel21)
-                                    .addComponent(jLabel22))
+                                    .addComponent(jLabel22)
+                                    .addGroup(jLayeredPane2Layout.createSequentialGroup()
+                                        .addComponent(jLabel15)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtPeso, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel29)
+                                        .addGap(29, 29, 29)
+                                        .addComponent(jLabel27)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(3, 3, 3)
+                                        .addComponent(jLabel31)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel28)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtIMC, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton2)))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLayeredPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -680,7 +803,18 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jLayeredPane2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel15)
+                            .addComponent(txtPeso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel27)
+                            .addComponent(txtTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel28)
+                            .addComponent(txtIMC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel29)
+                            .addComponent(jButton2)
+                            .addComponent(jLabel31))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel21)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -717,7 +851,7 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                 .addComponent(jLabel26)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLayeredPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Consultas", jPanel2);
@@ -741,11 +875,13 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         Paciente pacienteGuardar = gestionPacientes.guardarEditar();
         if (pacienteGuardar != null) {
             if (JOptionPane.showConfirmDialog(rootPane, "Agregar nuevo Paciente",
-                    "Agregar Agregar nuevo Paciente ", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    "Agregar nuevo Paciente ", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 if (controladorPacientes.IngresarPaciente(pacienteGuardar)) {
                     JOptionPane.showMessageDialog(this, "Se agregó el Paciente");
                     modeloTablaInicio.setPacientes(controladorPacientes.ObeterPacientes());
                     modeloTablaInicio.fireTableDataChanged();
+                    btnGuardarPaciente.setEnabled(false);
+                    btnNuevoPaciente.setEnabled(true);
                     LimpiarCamposPaciente();
 
                 } else {
@@ -800,6 +936,7 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
                     modeloTablaConsultas.setListaConsultas(controladorConsultas.ObeterHistorialClinico(pacienteSeleccionado));
                     modeloTablaConsultas.fireTableDataChanged();
                     LimpiarCamposConsultas();
+                    btnGuardarConsulta.setEnabled(false);
 
                 } else {
                     System.out.println("Error");
@@ -811,12 +948,46 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
 
     private void btnActualizarConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarConsultaActionPerformed
         // TODO add your handling code here:
+        if(consultaSeleccionada == null){
+            JOptionPane.showMessageDialog(rootPane, "No hay una consulta seleccionada para editar", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Consulta consultaGuardar = gestionConsultas.guardarEditarConsulta();
+        consultaGuardar.setIdPacienteConsultar(pacienteSeleccionado.getId());
+        
+        if(consultaGuardar !=null){
+            if (JOptionPane.showConfirmDialog(rootPane, "Actualizar Consulta",
+                    "ACTUALIZAR", JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (controladorConsultas.ActualizarConsulta(consultaGuardar)) {
+                    JOptionPane.showMessageDialog(this, "Grabado con éxito");
+                    modeloTablaConsultas.setListaConsultas(controladorConsultas.ObeterHistorialClinico(pacienteSeleccionado));
+                    modeloTablaConsultas.fireTableDataChanged();
+                    LimpiarCamposConsultas();
+                    btnGuardarConsulta.setEnabled(false);
+
+                } else {
+                    System.out.println("Error");
+                }
+            }
+        }
 
     }//GEN-LAST:event_btnActualizarConsultaActionPerformed
 
     private void btnNuevoPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoPacienteActionPerformed
         // TODO add your handling code here:
+        pacienteSeleccionado = null;
+        modeloTablaConsultas.setListaConsultas(new ArrayList<Consulta>());
+        modeloTablaConsultas.fireTableDataChanged();
+        btnGuardarPaciente.setEnabled(true);
         LimpiarCamposPaciente();
+        btnNuevoPaciente.setEnabled(false);
+        btnEditarPaciente.setEnabled(false);
+        btnEliminarPaciente.setEnabled(false);
+        btnNuevaConsulta.setEnabled(false);
+        btnActualizarConsulta.setEnabled(false);
+        LimpiarCamposConsultas();
+        txtCedula.setEditable(true);
+        
     }//GEN-LAST:event_btnNuevoPacienteActionPerformed
 
     private void jrCedulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jrCedulaActionPerformed
@@ -853,8 +1024,67 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
     private void btnNuevaConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaConsultaActionPerformed
         // TODO add your handling code here:
         LimpiarCamposConsultas();
+        btnGuardarConsulta.setEnabled(true);
+        btnActualizarConsulta.setEnabled(false);
+        
         
     }//GEN-LAST:event_btnNuevaConsultaActionPerformed
+
+    private void txtDireccionFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDireccionFocusGained
+        // TODO add your handling code here:
+        if(dateNa == null){
+            JOptionPane.showMessageDialog(this, "Ingrese la fecha de Nacimiento");
+            dateNa.requestFocus();
+            return;
+        }else{
+        LocalDate fechaNac = dateNa.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate ahora = LocalDate.now();
+
+        Period periodo = Period.between(fechaNac, ahora);
+        txtEdad.setText(String.valueOf(periodo.getYears()));
+        }
+    }//GEN-LAST:event_txtDireccionFocusGained
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            Runtime.getRuntime().exec("C:\\Windows\\System32\\cmd.exe /K start https://www.google.com/calendar");
+        } catch (IOException ex) {
+            Logger.getLogger(GestionMedi.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+public String imc(){
+    DecimalFormat formato1 = new DecimalFormat("#.00");
+    double peso = Double.parseDouble(txtPeso.getText());
+    double talla = Double.parseDouble(txtTalla.getText());
+    return formato1.format(peso/(talla*talla));
+}
+
+    private void txtCedulaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCedulaMouseClicked
+        // TODO add your handling code here:
+        
+            
+        
+    }//GEN-LAST:event_txtCedulaMouseClicked
+
+    private void txtPesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPesoActionPerformed
+
+    private void txtIMCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIMCActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIMCActionPerformed
+
+    private void txtIMCFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIMCFocusGained
+        // TODO add your handling code here:
+        
+        txtIMC.setText(imc());
+    }//GEN-LAST:event_txtIMCFocusGained
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        txtExamenFisico.setText("Peso: "+txtPeso.getText()+" Kg. \nTalla: "+txtTalla.getText()+" m \n Imc : "+txtIMC.getText());
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -902,12 +1132,15 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
     private javax.swing.JButton btnNuevoPaciente;
     private com.toedter.calendar.JDateChooser dateConsulta;
     private com.toedter.calendar.JDateChooser dateNa;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -920,7 +1153,12 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -960,10 +1198,14 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
     private javax.swing.JTextArea txtEstudiosComplementarios;
     private javax.swing.JTextArea txtExamenFisico;
     private javax.swing.JTextArea txtHistoriaEnfermedadActual;
+    private javax.swing.JTextField txtIMC;
     private javax.swing.JTextField txtIdConsulta;
     private javax.swing.JTextField txtMotivoConsulta;
     private javax.swing.JTextField txtNombrePacienteConsultar;
     private javax.swing.JTextField txtNombres;
+    private javax.swing.JTextField txtPeso;
+    private javax.swing.JTextField txtTalla;
+    private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextArea txtTratamientos;
     // End of variables declaration//GEN-END:variables
     void LimpiarCamposPaciente() {
@@ -978,6 +1220,8 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         txtAntePersonales.setText("");
         txtCirugias.setText("");
         dateNa.setDate(null);
+        txtCedulaConsultar.setText("");
+        txtNombrePacienteConsultar.setText("");
     }
 
     @Override
@@ -1021,6 +1265,12 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         txtNombrePacienteConsultar.setEditable(false);
         modeloTablaConsultas.setListaConsultas(controladorConsultas.ObeterHistorialClinico(p));
         modeloTablaConsultas.fireTableDataChanged();
+        btnEditarPaciente.setEnabled(true);
+        btnEliminarPaciente.setEnabled(true);
+        btnGuardarPaciente.setEnabled(false);
+        btnNuevoPaciente.setEnabled(true);
+        btnNuevaConsulta.setEnabled(true);
+        
         LimpiarCamposConsultas();
 
     }
@@ -1036,9 +1286,13 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         txtEstudiosComplementarios.setText(c.getEstudiosComplementarios());
         txtDiagnosticos.setText(c.getDiagnostricos());
         txtTratamientos.setText(c.getTratamientos());
+        
+        btnActualizarConsulta.setEnabled(true);
+        btnGuardarConsulta.setEnabled(true);
 
     }
     void LimpiarCamposConsultas(){
+        txtIdConsulta.setText(controladorConsultas.IdConsultar());
         dateConsulta.setDate(null);
         txtMotivoConsulta.setText("");
         txtHistoriaEnfermedadActual.setText("");
@@ -1046,5 +1300,8 @@ public class GestionMedi extends javax.swing.JFrame implements ComunicacionVista
         txtEstudiosComplementarios.setText("");
         txtDiagnosticos.setText("");
         txtTratamientos.setText("");
+        txtPeso.setText("");
+        txtTalla.setText("");
+        txtIMC.setText("");
     }
 }

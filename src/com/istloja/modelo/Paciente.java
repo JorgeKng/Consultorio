@@ -25,6 +25,7 @@ public class Paciente {
     private String AntecedentesFamiliares ;
     private String AntecedentesPersonales ;
     private String Corugias;
+    private String Telefono;
 
     public int getId() {
         return Id;
@@ -124,11 +125,20 @@ public class Paciente {
         this.Corugias = Corugias;
     }
 
-    @Override
-    public String toString() {
-        return "Paciente{" + "Id=" + Id + ", Cedula=" + Cedula + ", Genero=" + Genero + ", Nombres=" + Nombres + ", Estado=" + Estado + ", FechaNacimiento=" + FechaNacimiento + ", Edad=" + Edad + ", Correo=" + Correo + ", Direccion=" + Direccion + ", AntecedentesFamiliares=" + AntecedentesFamiliares + ", AntecedentesPersonales=" + AntecedentesPersonales + ", Corugias=" + Corugias + '}';
+    public String getTelefono() {
+        return Telefono;
     }
 
+    public void setTelefono(String Telefono) {
+        this.Telefono = Telefono;
+    }
+
+    @Override
+    public String toString() {
+        return "Paciente{" + "Id=" + Id + ", Cedula=" + Cedula + ", Genero=" + Genero + ", Nombres=" + Nombres + ", Estado=" + Estado + ", FechaNacimiento=" + FechaNacimiento + ", Edad=" + Edad + ", Correo=" + Correo + ", Direccion=" + Direccion + ", AntecedentesFamiliares=" + AntecedentesFamiliares + ", AntecedentesPersonales=" + AntecedentesPersonales + ", Corugias=" + Corugias + ", Telefono=" + Telefono + '}';
+    }
+
+    
     
     
 

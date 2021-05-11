@@ -44,8 +44,8 @@ public class Pacientesbd {
         //Conexion con la base de datos.
         Connection con = null;
 
-        String sql = "INSERT INTO `consultorio`.`pacientes` ( `cedula`, `genero`, `nombres`, `estado`, `f_nacimiento`, `edad`, `correo`, `direccion`, `antecedentes_familiares`, `antecedentes_personales`, `cirugias`) VALUES "
-                + "('"+p.getCedula()+"', '"+p.getGenero()+"', '"+p.getNombres()+"', '"+p.getEstado()+"', '"+utilidades.devolverFecha(p.getFechaNacimiento())+"', '"+String.valueOf(p.getEdad())+"', '"+p.getCorreo()+"', '"+p.getDireccion()+"', '"+p.getAntecedentesFamiliares()+"', '"+p.getAntecedentesPersonales()+"', '"+p.getCorugias()+"');";
+        String sql = "INSERT INTO `consultorio`.`pacientes` ( `cedula`, `genero`, `nombres`, `estado`, `f_nacimiento`, `edad`, `correo`, `direccion`, `antecedentes_familiares`, `antecedentes_personales`, `cirugias`, `telefono`) VALUES "
+                + "('"+p.getCedula()+"', '"+p.getGenero()+"', '"+p.getNombres()+"', '"+p.getEstado()+"', '"+utilidades.devolverFecha(p.getFechaNacimiento())+"', '"+String.valueOf(p.getEdad())+"', '"+p.getCorreo()+"', '"+p.getDireccion()+"', '"+p.getAntecedentesFamiliares()+"', '"+p.getAntecedentesPersonales()+"', '"+p.getCorugias()+"','"+p.getTelefono()+"');";
         try {
             //Es una instancia de la conexion previamente creada.
 
@@ -82,7 +82,8 @@ public class Pacientesbd {
                 + "`direccion` = '"+p.getDireccion()+"', "
                 + "`antecedentes_familiares` = '"+p.getAntecedentesFamiliares()+"',"
                 + " `antecedentes_personales` = '"+p.getAntecedentesPersonales()+"',"
-                + " `cirugias` = '"+p.getCorugias()+"' WHERE (`id_paciente` = '"+p.getId()+"');";
+                + " `cirugias` = '"+p.getCorugias()+"',"
+                + ", `telefono` = '"+p.getTelefono()+"' WHERE (`id_paciente` = '"+p.getId()+"');";
         System.out.println(p);
         
         try {
@@ -157,7 +158,7 @@ public class Pacientesbd {
                 v.setAntecedentesFamiliares(rs.getString(10));
                 v.setAntecedentesPersonales(rs.getString(11));
                 v.setCorugias(rs.getString(12));
-                
+                v.setTelefono(rs.getString(13));
 
                 listaPacientes.add(v);
 

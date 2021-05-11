@@ -24,6 +24,7 @@ public class GestionarPacientes {
     private JTextField txtEdad ;
     private JTextField txtDireccion ;
     private JTextField txtCorreo ;
+    private JTextField txtTelefono ;
     private JTextArea txtAnteFamiliares ;
     private JTextArea  txtAntePersonales ;
     private JTextArea  txtCirugias ;
@@ -31,17 +32,18 @@ public class GestionarPacientes {
     private JFrame frameGestionMedi; 
     private JComboBox jbGenero;
     private JComboBox jbEstado;
-    private JDateChooser dateNa;
+    private JDateChooser dateNa ;
 
     public GestionarPacientes() {
     }
 
-    public GestionarPacientes(JTextField txtCedula, JTextField txtNombres, JTextField txtEdad, JTextField txtDireccion, JTextField txtCorreo, JTextArea txtAnteFamiliares, JTextArea txtAntePersonales, JTextArea txtCirugias, Utilidades utilidades, JFrame frameGestionMedi, JComboBox jbGenero, JComboBox jbEstado, JDateChooser dateNa) {
+    public GestionarPacientes(JTextField txtCedula, JTextField txtNombres, JTextField txtEdad, JTextField txtDireccion, JTextField txtCorreo, JTextField txtTelefono, JTextArea txtAnteFamiliares, JTextArea txtAntePersonales, JTextArea txtCirugias, Utilidades utilidades, JFrame frameGestionMedi, JComboBox jbGenero, JComboBox jbEstado, JDateChooser dateNa) {
         this.txtCedula = txtCedula;
         this.txtNombres = txtNombres;
         this.txtEdad = txtEdad;
         this.txtDireccion = txtDireccion;
         this.txtCorreo = txtCorreo;
+        this.txtTelefono = txtTelefono;
         this.txtAnteFamiliares = txtAnteFamiliares;
         this.txtAntePersonales = txtAntePersonales;
         this.txtCirugias = txtCirugias;
@@ -51,6 +53,8 @@ public class GestionarPacientes {
         this.jbEstado = jbEstado;
         this.dateNa = dateNa;
     }
+
+    
 
     public JTextField getTxtCedula() {
         return txtCedula;
@@ -219,6 +223,7 @@ public class GestionarPacientes {
         p.setAntecedentesFamiliares(txtAnteFamiliares.getText());
         p.setAntecedentesPersonales(txtAntePersonales.getText());
         p.setCorugias(txtCirugias.getText());
+        p.setTelefono(txtTelefono.getText());
         
         return p;
         

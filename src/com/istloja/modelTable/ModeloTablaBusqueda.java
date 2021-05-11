@@ -18,7 +18,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ModeloTablaBusqueda extends AbstractTableModel {
 
-    private String[] m_colNames = {"CEDULA","NOMBRES Y APELLIDOS","DIRECCION","CORREO"};
+    private String[] m_colNames = {"CEDULA","NOMBRES Y APELLIDOS","DIRECCION","TELEFONO"};
     private List<Paciente> pacientesbusqueda;
     private GestionMedi gestionMedi;
 
@@ -50,7 +50,7 @@ public class ModeloTablaBusqueda extends AbstractTableModel {
             case 2:
                 return b.getDireccion();
             case 3:
-                return b.getCorreo();
+                return b.getTelefono();
             
         }
         return new String();

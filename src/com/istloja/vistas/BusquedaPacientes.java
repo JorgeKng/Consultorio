@@ -22,6 +22,7 @@ public class BusquedaPacientes extends javax.swing.JDialog {
         this.modeloTablaBusqueda = modeloTablaBusqueda;
         this.gestionMedi = gestionMedi;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

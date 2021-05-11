@@ -185,15 +185,15 @@ public class Consultasbd {
             while (rs.next()) {
 
                 Consulta g = new Consulta();
-                g.setIdConsulta(rs.getInt(13));
-                g.setFechaConsulta(rs.getDate(14));
-                g.setMotivoConsulta(rs.getString(15));
-                g.setHistoriaEnfermedad(rs.getString(16));
-                g.setExamenFisico(rs.getString(17));
-                g.setEstudiosComplementarios(rs.getString(18));
-                g.setDiagnostricos(rs.getString(19));
-                g.setTratamientos(rs.getString(20));
-                g.setIdPacienteConsultar(rs.getInt(21));
+                g.setIdConsulta(rs.getInt(14));
+                g.setFechaConsulta(rs.getDate(15));
+                g.setMotivoConsulta(rs.getString(16));
+                g.setHistoriaEnfermedad(rs.getString(17));
+                g.setExamenFisico(rs.getString(18));
+                g.setEstudiosComplementarios(rs.getString(19));
+                g.setDiagnostricos(rs.getString(20));
+                g.setTratamientos(rs.getString(21));
+                g.setIdPacienteConsultar(rs.getInt(22));
                 
 
                 listaConsulta.add(g);
@@ -210,7 +210,31 @@ public class Consultasbd {
         
         return listaConsulta;
     }
-    
+    public String IdConsultar(){
+        Connection co = null;
+        Statement stm = null;
+        //Sentencia de JDBC para obtener valores de la base de datos.
+        ResultSet rs = null;
+        String id = "";
+        
+        String sql = "select max(id_consulta+1) as id_consulta from consultas ;";
+        try {
+            co = new Conexion().conectarBaseDatos();
+            stm = co.createStatement();
+            rs = stm.executeQuery(sql);
+            while (rs.next()) {
+                id = rs.getString(1);
+            }
+            stm.close();
+            rs.close();
+            co.close();
+        } catch (SQLException e) {
+            System.out.println("Error:" + e.getMessage());
+
+        }
+        
+        return id;
+    }
 
    
 }
